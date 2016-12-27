@@ -29,7 +29,7 @@ It should be the same than the Ressource Server
 # Protocol Flow
 
      +--------+                               +---------------+
- >    |        |--(A)- Authorization Request ->|   Resource    |
+     |        |--(A)- Authorization Request ->|   Resource    |
      |        |                               |     Owner     |
      |        |<-(B)-- Authorization Grant ---|               |
      |        |                               +---------------+
@@ -67,7 +67,14 @@ Of course in our case we will use the "indirectly via the authorization server a
 
 In that case the `Authorization grant` will be an Authorization Code.
 
-## Authorization Code
+It is said in the Website that it COOP accepts both `Authorization grant`:
+
+- Authorization Code
+- Client Credentials
+
+Of course, the first one is the most complicated.  We will see it at the end.
+
+# Authorization Code
 
 >   The authorization code is obtained by using an authorization server
 >   as an intermediary between the client and resource owner.  Instead of
@@ -85,7 +92,7 @@ In that case the `Authorization grant` will be an Authorization Code.
 
 Of course, this is what we want to do. The course provided by the Univerity allows use another type of Authorization grant: `Client Credentials`.
 
-## Client Credentials
+# Client Credentials
 
 >   The client credentials (or other forms of client authentication) can
 >   be used as an authorization grant when the authorization scope is
@@ -97,16 +104,24 @@ Of course, this is what we want to do. The course provided by the Univerity allo
 >   resources based on an authorization previously arranged with the
 >   authorization server.
 
-For the moment I don't see the point of using this mechanism.  But I will follow the course anyhow.
-
 After having created my user account I have been assigned a USER ID.
 
-    User ID: 1270
+- User ID: 1270
+
+What is important here is that the Specification says that in the case of Client Credentials:
+
+> based on an authorization previously arranged with the authorization server.
+
+This means that we have to have a arrangement with the authorization server.  Let's that we don't have one.
+
+## Using cURL
 
 We can have a simple test with cURL and POST
 
     Request : curl -X POST http://coop.apps.knpuniversity.com/api/2/eggs-collect
     Response: {"error":"access_denied","error_description":"an access token is required"}%
+
+## Using the website
 
 The exact same test can be done from the website directly [here](http://coop.apps.knpuniversity.com/application/api/eggs-collect)
 
@@ -120,8 +135,42 @@ And the result will the same than the above cURL test that is :
 
     Response: {"error":"access_denied","error_description":"an access token is required"}%
 
-# Client Registration
+## Access Token
 
-# The client Credentials
+As we have seen previously the authorization does not required anything from the Customers.
 
+>   Access tokens are credentials used to access protected resources.  An
+>   access token is a string representing an authorization issued to the
+>   client.  The string is usually opaque to the client.  Tokens
+>   represent specific scopes and durations of access, granted by the
+>   resource owner, and enforced by the resource server and authorization
+>   server.
 
+Tokens represent *specific scopes and durations of access* granted by the ressource owner.
+
+>   The token may denote an identifier used to retrieve the authorization
+>   information or may self-contain the authorization information in a
+>   verifiable manner (i.e., a token string consisting of some data and a
+>   signature).  Additional authentication credentials, which are beyond
+>   the scope of this specification, may be required in order for the
+>   client to use a token.
+>
+>   The access token provides an abstraction layer, replacing different
+>   authorization constructs (e.g., username and password) with a single
+>   token understood by the resource server.  This abstraction enables
+>   issuing access tokens more restrictive than the authorization grant
+>   used to obtain them, as well as removing the resource server's need
+>   to understand a wide range of authentication methods.
+
+In the case of Client Credential. I, User ID : 1270, will register the application that will act on my behalf.
+
+Here are the parameters:
+- Application Name: First Script
+- Redirect URI: *Not Applicable*
+- Scope: Collect Eggs from Your Chickens
+
+Further to this action the Authorization servers have provided me with the following information:
+- Client ID: First Script
+- Client Secret: 9fefdfe4e1dbff8e5ece8e148912ddea
+- Redirect URI:
+- Scope: eggs-collect
