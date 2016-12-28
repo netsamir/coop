@@ -253,13 +253,10 @@ Scope: eggs-count
 ### Authorization endpoint
 
 http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code
-
-Retrieve the authorization code
-
-GET /authorize	
 When using the authorization code (traditional "web") grant type, start by redirecting the user to this URL:
 
-http://coop.apps.knpuniversity.com/authorize
+    http://coop.apps.knpuniversity.com/authorize
+
 This accepts the following GET parameters
 
 - client_id
@@ -277,19 +274,19 @@ This accepts the following GET parameters
 
 Once the user is redirected back to redirect_uri, you'll have a code query parameter. Use this with the next endpoint to exchange that code for an access token.
 
-
 In our project we will use the following that will be in our home page:
 
-<a href='http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code&redirect_uri=http://localhost:9000/auth&scope=eggs-collect'>Authorize</a>
+    <a href='http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code&redirect_uri=http://localhost:9000/auth&scope=eggs-collect'>Authorize</a>
 
 ### Token endpoint
 
-URL: Description
-POST /token:
+    URL: Description
+    POST /token:
 
 The endpoint used for requesting an access token, using either the authorization_code or client_credentials grant type.
 
-http://coop.apps.knpuniversity.com/token
+    http://coop.apps.knpuniversity.com/token
+
 This accepts the following POST fields:
 
 - client_id
@@ -316,8 +313,35 @@ oauth2/urls.py:
 
 coop_auth/views.py:
 
+    from django.shortcuts import render
+    from django.http import HttpResponse
+    import requests
+
+    # Create your views here.
+
+    def home(request):
+        """Home page"""
+        # authorization_endpoint = http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code
+        return render(request, 'home.html')
+
     def auth(request):
         """Authorisation function"""
-        return HttpResponse(request.GET['code'])
+        code = request.GET['code']
+        data = {
+            'client_id': 'Script_with_auth',
+            'client_secret': 'fb765bad414da309eb7fc04bd1c2fac9',
+            'grant_type':'authorization_code',
+            'code': code,
+            'redirect_uri': 'http://localhost:9000/auth'
+        }
+        token_endpoint = "http://coop.apps.knpuniversity.com/token"
+        token_endpoint_out = requests.post(token_endpoint, data=data)
+        access_token = token_endpoint_out.json()['access_token']
+        uri = 'http://coop.apps.knpuniversity.com/api/1270/eggs-collect'
+        headers = {'Authorization': 'Bearer ' + access_token}
+        eggs = requests.post(uri, headers=headers)
+        return HttpResponse(eggs.text)
+        def auth(request):
+            """Authorisation function"""
+            return HttpResponse(request.GET['code'])
 
-Now we could add
