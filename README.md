@@ -146,7 +146,7 @@ As we have seen previously the authorization does not required anything from the
 >   resource owner, and enforced by the resource server and authorization
 >   server.
 
-Tokens represent *specific scopes and durations of access* granted by the ressource owner.
+Tokens represent **specific scopes and durations of access** granted by the ressource owner.
 
 >   The token may denote an identifier used to retrieve the authorization
 >   information or may self-contain the authorization information in a
@@ -174,3 +174,49 @@ Further to this action the Authorization servers have provided me with the follo
 - Client Secret: 9fefdfe4e1dbff8e5ece8e148912ddea
 - Redirect URI:
 - Scope: eggs-collect
+
+
+### Using cURL or the Website
+
+➜  coop git:(master) ✗ curl -X Post -d "client_id=First+Script&client_secret=9fefdfe4e1dbff8e5ece8e148912ddea&grant_type=client_credentials" http://coop.apps.knpuniversity.com/token
+{"access_token":"1a877fd91cef27900fa43289d1e63a293376bfde","expires_in":86400,"token_type":"Bearer","scope":"eggs-collect"}
+
+## Retrieve the information
+### Using cURL or the Website
+
+    ➜  coop git:(master) ✗ curl -X POST -H "Authorization: Bearer 77629f07a9f600edd130ce851944f1b290af9f0e" http://coop.apps.knpuniversity.com/api/1270/eggs-collect
+    {"action":"eggs-collect","success":true,"message":"Hey look at that, 5 eggs have been collected!","data":5}
+    ➜  coop git:(master) ✗
+
+Should we try to get the information of another user then we will get Error Message:
+
+  coop git:(master) ✗ curl -X POST -H "Authorization: Bearer 77629f07a9f600edd130ce851944f1b290af9f0e" http://coop.apps.knpuniversity.com/api/2/eggs-collect
+  {"error":"access_denied","error_message":"You do not have access to take this action on behalf of this user"}
+
+## In Python
+
+
+    #!/usr/bin/env python
+
+    """Just a simple implementation oauth2: Client Credentials
+    """
+
+    import requests
+
+    def main():
+        """Testing the application"""
+        uri_token = 'http://coop.apps.knpuniversity.com/token'
+        data = {
+            'client_id': 'collect_eggs',
+            'client_secret': 'aba08d307b6cbde2bb89cbbeff055e6b',
+            'grant_type': 'client_credentials'
+        }
+        current_token = requests.post(uri_token, data=data)
+        token = current_token.json()['access_token']
+        uri = 'http://coop.apps.knpuniversity.com/api/1270/eggs-collect'
+        headers = {'Authorization': 'Bearer ' + token}
+        eggs = requests.post(uri, headers=headers)
+        print(eggs.text)
+
+    if __name__ == '__main__':
+        main()

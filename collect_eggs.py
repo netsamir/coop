@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Just a test for getting around oath2"""
+"""Just a simple implementation of oauth2: Client Credential"""
 
 import requests
 
