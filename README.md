@@ -165,11 +165,13 @@ Tokens represent **specific scopes and durations of access** granted by the ress
 In the case of Client Credential. I, User ID : 1270, will register the application that will act on my behalf.
 
 Here are the parameters:
+
 - Application Name: First Script
 - Redirect URI: *Not Applicable*
 - Scope: Collect Eggs from Your Chickens
 
 Further to this action the Authorization servers have provided me with the following information:
+
 - Client ID: First Script
 - Client Secret: 9fefdfe4e1dbff8e5ece8e148912ddea
 - Redirect URI:
@@ -178,8 +180,8 @@ Further to this action the Authorization servers have provided me with the follo
 
 ### Using cURL or the Website
 
-➜  coop git:(master) ✗ curl -X Post -d "client_id=First+Script&client_secret=9fefdfe4e1dbff8e5ece8e148912ddea&grant_type=client_credentials" http://coop.apps.knpuniversity.com/token
-{"access_token":"1a877fd91cef27900fa43289d1e63a293376bfde","expires_in":86400,"token_type":"Bearer","scope":"eggs-collect"}
+    ➜  coop git:(master) ✗ curl -X Post -d "client_id=First+Script&client_secret=9fefdfe4e1dbff8e5ece8e148912ddea&grant_type=client_credentials" http://coop.apps.knpuniversity.com/token
+    {"access_token":"1a877fd91cef27900fa43289d1e63a293376bfde","expires_in":86400,"token_type":"Bearer","scope":"eggs-collect"}
 
 ## Retrieve the information
 ### Using cURL or the Website
@@ -190,8 +192,8 @@ Further to this action the Authorization servers have provided me with the follo
 
 Should we try to get the information of another user then we will get Error Message:
 
-  coop git:(master) ✗ curl -X POST -H "Authorization: Bearer 77629f07a9f600edd130ce851944f1b290af9f0e" http://coop.apps.knpuniversity.com/api/2/eggs-collect
-  {"error":"access_denied","error_message":"You do not have access to take this action on behalf of this user"}
+    coop git:(master) ✗ curl -X POST -H "Authorization: Bearer 77629f07a9f600edd130ce851944f1b290af9f0e" http://coop.apps.knpuniversity.com/api/2/eggs-collect
+    {"error":"access_denied","error_message":"You do not have access to take this action on behalf of this user"}
 
 ## In Python
 
