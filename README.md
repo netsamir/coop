@@ -259,12 +259,12 @@ This accepts the following GET parameters
 - client_id
 - response_type Either code or token
 - redirect_uri (authorization_code only) The URL that COOP will redirect the user back to after granting or denying authorization.
-- scope The permissions the user should authorize, separated by a space (e.g. "eggs-count profile"). One of: 
-    - barn-unlock 
-    - toiletseat-down 
-    - chickens-feed 
-    - eggs-collect 
-    - eggs-count 
+- scope The permissions the user should authorize, separated by a space (e.g. "eggs-count profile"). One of:
+    - barn-unlock
+    - toiletseat-down
+    - chickens-feed
+    - eggs-collect
+    - eggs-count
     - profile
 
 - (Optional) state A key that's returned on the redirect_uri that can be used as a CSRF token.
@@ -295,6 +295,8 @@ This accepts the following POST fields:
 Notice also that the URL has changed it is not anymore related to a user id:
 
         uri = 'http://coop.apps.knpuniversity.com/api/me/eggs-collect'
+
+We retrieve the user id based on the profile.
 
 ## Django
 
@@ -344,7 +346,7 @@ coop_auth/views.py:
 
         profile = requests.get(uri_profile, headers=headers)
         user_id = profile.json()['id']
-        
+
         uri_eggs_collect = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-collect')
         uri_eggs_count = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-count')
 
@@ -353,3 +355,5 @@ coop_auth/views.py:
         out = "Eggs Count: {} \n Eggs Collect: {}".format(eggs_count.text,
                                                         eggs_collect.text)
         return HttpResponse(out)
+
+## Store the token in a database

@@ -1,7 +1,9 @@
 """ TEST """
 from django.shortcuts import render
 from django.http import HttpResponse
+
 import requests
+from .models import CoopAuthToken
 
 # Create your views here.
 
@@ -29,7 +31,7 @@ def auth(request):
 
     profile = requests.get(uri_profile, headers=headers)
     user_id = profile.json()['id']
-    
+
     uri_eggs_collect = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-collect')
     uri_eggs_count = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-count')
 
