@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 
 import requests
@@ -29,6 +29,7 @@ def home(request):
     return render(request, 'home.html', {'access_token_valid': access_token_valid})
 
 def mycoop(request):
+    """ Check the status of my coop"""
     user_id = 1270
     domaine = "http://coop.apps.knpuniversity.com"
 
@@ -65,24 +66,10 @@ def auth(request):
     }
     token_endpoint = domaine + "/token"
     token_endpoint_out = requests.post(token_endpoint, data=data)
-    print(token_endpoint_out.text)
     access_token = token_endpoint_out.json()['access_token']
     expires_in = token_endpoint_out.json()['expires_in']
     user.access_token = access_token
     user.expire_at = timezone.now() + timedelta(0, int(expires_in))
     user.save()
 
-    uri_profile = domaine + '/api/me'
-    headers = {'Authorization': 'Bearer ' + access_token}
-
-    profile = requests.get(uri_profile, headers=headers)
-    user_id = profile.json()['id']
-
-    uri_eggs_collect = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-collect')
-    uri_eggs_count = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-count')
-
-    eggs_count = requests.post(uri_eggs_count, headers=headers)
-    eggs_collect = requests.post(uri_eggs_collect, headers=headers)
-    out = "Eggs Count: {} \n Eggs Collect: {}".format(eggs_count.text,
-                                                      eggs_collect.text)
-    return HttpResponse(out)
+    return redirect('mycoop')
