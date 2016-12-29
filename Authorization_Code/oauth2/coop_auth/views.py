@@ -26,7 +26,8 @@ def home(request):
     if user.expire_at < timezone.now():
         access_token_valid = False
 
-    return render(request, 'home.html', {'access_token_valid': access_token_valid})
+    url = "http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code&redirect_uri=http://localhost:9000/auth&scope=eggs-collect profile eggs-count"
+    return render(request, 'home.html', {'access_token_valid': access_token_valid, 'url': url})
 
 def mycoop(request):
     """ Check the status of my coop"""
