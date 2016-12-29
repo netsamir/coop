@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^$', views.home),
     #"GET /auth?code=edc64eb3aba308cdd25792c4088ac3e897f994cd&
     url(r'^auth.*', views.auth),
+    url(r'^mycoop', views.mycoop, name='mycoop'),
 ]
