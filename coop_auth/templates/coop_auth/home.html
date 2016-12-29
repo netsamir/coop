@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_custom %}
+<!-- CSS Customization -->
+<link rel="stylesheet" href="{% static 'bookmarks/css/custom.css' %}">
+{% endblock %}
+
+{% block content %}
+<!--=== Content Part ===-->
+<!--=== Content Part ===-->
+  <div class="container content">
+   <div class="row">
+    <div class="col-md-6">
+     <h2 class="title-v2">COOP</h2>
+     <p>
+     A test for COOP
+     </p>
+     <p>
+     This is an implementation of COOP in python/django
+     </p><br>
+     <a href="https://knpuniversity.com/screencast/oauth" class="btn-u btn-brd btn-brd-hover btn-u-dark">Read More</a>
+    {% if access_token_valid %}
+      <a href="{% url 'mycoop' %}" class="btn-u">Check my Coop state</a>
+    {% else %}
+      <a href="{{ url }}" class="btn btn-danger">Authorize</a>
+    {% endif %}
+    </div>
+    <div class="col-md-6">
+
+      <!--== header Counter== -->
+      <!-- Counters -->
+      <div class="main-counters margin-bottom-40">
+       <div class="headline"><h2>Eggs</h2></div>
+      <!--== Counter== -->
+      <div class="row margin-bottom-40">
+        <div class="counters col-md-3 col-sm-3">
+         <span class="counter">52147</span>
+         <h4>Code Lines</h4>
+        </div>
+        <div class="counters col-md-3 col-sm-3">
+         <span class="counter">24583</span>
+         <h4>Projects</h4>
+        </div>
+      <div>
+      <!--== Counter== -->
+    </div>
+      <!--== header Counter== -->
+
+    </div>
+   </div>
+  </div><!--/container-->
+  <!--=== End Content Part ===-->
+{% endblock %}
+

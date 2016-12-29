@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+    <!--<![endif]-->
+    <head>
+    <title>{% block title %}{% endblock %}</title>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="{% static 'rammotors/img/favicon.ico' %}">
+        <!-- Web Fonts -->
+        <link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin'>
+        <!-- CSS Global Compulsory -->
+        <link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/shop.style.css' %}">
+        <!-- CSS Header and Footer -->
+        <link rel="stylesheet" href="{% static 'assets/css/headers/header-v5.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/footers/footer-v4.css' %}">
+        <!-- CSS Implementing Plugins -->
+        <link rel="stylesheet" href="{% static 'assets/plugins/animate.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/plugins/line-icons/line-icons.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/plugins/font-awesome/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/plugins/noUiSlider/jquery.nouislider.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/plugins/scrollbar/css/jquery.mCustomScrollbar.css' %}">
+        <!-- CSS Theme -->
+        <link rel="stylesheet" href="{% static 'assets/css/theme-colors/default.css' %}" id="style_color">
+        {% block css_custom %}{% endblock %}
+    </head>
+    <body class="header-fixed">
+
+        {% block content %}{% endblock %}
+
+        <!--/wrapper-->
+        <!-- JS Global Compulsory -->
+        <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'assets/plugins/jquery/jquery-migrate.min.js' %}"></script>
+        <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+        <!-- JS Implementing Plugins -->
+        <script src="{% static 'assets/plugins/back-to-top.js' %}"></script>
+        <script src="{% static 'assets/plugins/smoothScroll.js' %}"></script>
+        <script src="{% static 'assets/plugins/noUiSlider/jquery.nouislider.all.min.js' %}"></script>
+        <script src="{% static 'assets/plugins/scrollbar/js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+        <!-- JS Customization -->
+        <script src="{% static 'assets/js/custom.js' %}"></script>
+        <!-- JS Page Level -->
+        <script src="{% static 'assets/js/shop.app.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/mouse-wheel.js' %}"></script>
+        <script>
+          jQuery(document).ready(function() {
+          App.init();
+          App.initScrollBar();
+          MouseWheel.initMouseWheel();
+          });
+        </script>
+                <!--[if lt IE 9]>
+        <script src="{% static 'assets/plugins/respond.js' %}"></script>
+        <script src="{% static 'assets/plugins/html5shiv.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/placeholder-IE-fixes.js' %}"></script>
+        <![endif]-->
+                <!--[if lt IE 10]>
+        <script src="{% static 'assets/plugins/sky-forms-pro/skyforms/js/jquery.placeholder.min.js' %}"></script>
+        <![endif]-->
+    </body>
+</html>
