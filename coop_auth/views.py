@@ -72,4 +72,4 @@ def auth(request):
     user.expire_at = timezone.now() + timedelta(0, int(expires_in))
     user.save()
 
-    return redirect('mycoop')
+    return redirect('home')
