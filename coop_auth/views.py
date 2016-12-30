@@ -46,11 +46,11 @@ def mycoop(request):
     uri_eggs_collect = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-collect')
     uri_eggs_count = '{}/api/{}/{}'.format(domaine, user_id, 'eggs-count')
 
-    eggs_count = requests.post(uri_eggs_count, headers=headers)
     eggs_collect = requests.post(uri_eggs_collect, headers=headers)
-    out = "Eggs Count: {} \n Eggs Collect: {}".format(eggs_count.text,
-                                                      eggs_collect.text)
-    return HttpResponse(out)
+    eggs_count = requests.post(uri_eggs_count, headers=headers)
+    result = "[{}, {}]".format(eggs_collect.text, eggs_count.text)
+    print(result)
+    return HttpResponse(result)
 
 def auth(request):
     """Authorisation function"""

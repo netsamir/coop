@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% block css_custom %}
-<!-- CSS Customization -->
-<link rel="stylesheet" href="{% static 'bookmarks/css/custom.css' %}">
+  <!-- CSS Customization -->
+  <link rel="stylesheet" href="{% static 'coop_auth/css/custom.css' %}">
+{% endblock %}
+{% block js_custom %}
+    <!-- JS Customization -->
+    <script src="{% static 'coop_auth/js/custom.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +24,7 @@
      </p><br>
      <a href="https://knpuniversity.com/screencast/oauth" class="btn-u btn-brd btn-brd-hover btn-u-dark">Read More</a>
     {% if access_token_valid %}
-      <a href="{% url 'mycoop' %}" class="btn-u">Check my Coop state</a>
+      <a href="{% url 'mycoop' %}" class="btn-u" id="check_mycoop">Check my Coop state</a>
     {% else %}
       <a href="{{ url }}" class="btn btn-danger">Authorize</a>
     {% endif %}
@@ -34,12 +38,12 @@
       <!--== Counter== -->
       <div class="row margin-bottom-40">
         <div class="counters col-md-3 col-sm-3">
-         <span class="counter">52147</span>
-         <h4>Code Lines</h4>
+         <span class="counter" id="collect_eggs"></span>
+         <h4>Eggs Collected</h4>
         </div>
         <div class="counters col-md-3 col-sm-3">
-         <span class="counter">24583</span>
-         <h4>Projects</h4>
+         <span class="counter" id="total_eggs"></span>
+         <h4>Total Eggs Collected</h4>
         </div>
       <div>
       <!--== Counter== -->
