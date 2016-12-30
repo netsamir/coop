@@ -49,7 +49,6 @@ def mycoop(request):
     eggs_collect = requests.post(uri_eggs_collect, headers=headers)
     eggs_count = requests.post(uri_eggs_count, headers=headers)
     result = "[{}, {}]".format(eggs_collect.text, eggs_count.text)
-    print(result)
     return HttpResponse(result)
 
 def auth(request):
