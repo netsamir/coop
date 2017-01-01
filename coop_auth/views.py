@@ -35,9 +35,9 @@ def home(request):
     except ObjectDoesNotExist:
         user = CoopAuthToken.objects.create(user_id=user_id,\
                                      access_token='value missing',\
-                                     expire_at=timezone.now())
+                                     expire_at=timezone.now() - timedelta(0, 1483272159))
 
-    expire_in = (user.expire_at - timezone.now()).seconds
+    expire_in = (user.expire_at - timezone.now()).total_seconds()
     if expire_in < 120: #120 seconds
         access_token_valid = False
 
