@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  hljs.initHighlightingOnLoad();
   $("#check_mycoop").click(function(event){
     event.preventDefault();
     $.getJSON("http://localhost:9000/mycoop",
