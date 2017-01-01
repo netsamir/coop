@@ -133,6 +133,8 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 STATICFILES_DIRS = [
     os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'Unify-v1.9.6'),
+    os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'JQuery'),
+    os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'CSS'),
     os.path.join(BASE_DIR, 'static'),
 ]
 

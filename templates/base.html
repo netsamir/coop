@@ -46,11 +46,12 @@
         <script type="text/javascript" src="{% static 'assets/plugins/smoothScroll.js' %}"></script>
         <script type="text/javascript" src="{% static 'assets/plugins/counter/waypoints.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'assets/plugins/counter/jquery.counterup.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'assets/plugins/circles-master/circles.js' %}"></script>
         <script type="text/javascript" src="{% static 'assets/plugins/noUiSlider/jquery.nouislider.all.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'assets/plugins/scrollbar/js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-        {% block js_custom %}{% endblock %}
         <!-- JS Page Level -->
-        <script type="text/javascript" src="{% static 'assets/js/shop.app.js' %}"></script>
+        {% block js_custom %}{% endblock %}
+        <script type="text/javascript" src="{% static 'assets/js/app.js' %}"></script>
         <script type="text/javascript" src="{% static 'assets/js/plugins/mouse-wheel.js' %}"></script>
         <script>
           jQuery(document).ready(function() {

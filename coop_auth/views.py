@@ -1,4 +1,7 @@
-""" TEST """
+"""
+An Implementation of OAuth2 according to RFC649 and
+https://knpuniversity.com/screencast/oauth.
+"""
 from datetime import timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,9 +15,19 @@ from .models import CoopAuthToken
 # Create your views here.
 
 def home(request):
-    """Home page"""
+    """
+    Authorization Server:
+      The server issuing access tokens to the client after successfully
+      authenticating the resource owner and obtaining authorization.
+
+   (A)  The client requests authorization from the resource owner.  The
+        authorization request can be made [...] indirectly via the
+        authorization server as an intermediary.
+    """
+    context = {}
     # authorization_endpoint =
     url = "http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code&redirect_uri=http://localhost:9000/auth&scope=eggs-collect profile eggs-count"
+
     access_token_valid = True
     user_id = 1270
     try:
@@ -24,13 +37,27 @@ def home(request):
                                      access_token='value missing',\
                                      expire_at=timezone.now())
 
-    if user.expire_at < timezone.now():
+    expire_in = (user.expire_at - timezone.now()).seconds
+    if expire_in < 120: #120 seconds
         access_token_valid = False
 
-    return render(request, 'coop_auth/home.html', {'access_token_valid': access_token_valid, 'url': url})
+    context = {\
+        'access_token_valid': access_token_valid,\
+        'url': url,\
+        'expire_in': expire_in\
+    }
+
+    return render(request, 'coop_auth/home.html', context)
 
 def mycoop(request):
-    """ Check the status of my coop"""
+    """ Check the status of my coop
+
+   (E)  The client requests the protected resource from the resource
+        server and authenticates by presenting the access token.
+
+   (F)  The resource server validates the access token, and if valid,
+        serves the request.
+    """
     user_id = 1270
     domaine = "http://coop.apps.knpuniversity.com"
 
@@ -52,7 +79,23 @@ def mycoop(request):
     return HttpResponse(result)
 
 def auth(request):
-    """Authorisation function"""
+    """
+    Authorization Server:
+      The server issuing access tokens to the client after successfully
+      authenticating the resource owner and obtaining authorization.
+
+   (B)  The client receives an authorization grant, which is a
+        credential representing the resource owner's authorization, [...]. The
+        authorization grant type depends on the method used by the
+        client to request authorization and the types supported by the
+        authorization server.
+
+   (C)  The client requests an access token by authenticating with the
+        authorization server and presenting the authorization grant.
+
+   (D)  The authorization server authenticates the client and validates
+        the authorization grant, and if valid, issues an access token.
+    """
     domaine = "http://coop.apps.knpuniversity.com"
     user_id = 1270
     user = CoopAuthToken.objects.get(user_id=user_id)
@@ -64,6 +107,7 @@ def auth(request):
         'code': code,
         'redirect_uri': 'http://localhost:9000/auth'
     }
+    # token_endpoint =
     token_endpoint = domaine + "/token"
     token_endpoint_out = requests.post(token_endpoint, data=data)
     access_token = token_endpoint_out.json()['access_token']

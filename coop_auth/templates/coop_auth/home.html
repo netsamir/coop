@@ -2,14 +2,19 @@
 {% load static %}
 {% block css_custom %}
   <!-- CSS Customization -->
+  <link rel="stylesheet" href="{% static 'jquery/flipclock/css/flipclock.css' %}">
   <link rel="stylesheet" href="{% static 'coop_auth/css/custom.css' %}">
 {% endblock %}
 {% block js_custom %}
     <!-- JS Customization -->
+    <script src="{% static 'jquery/flipclock/js/flipclock.min.js' %}"></script>
     <script src="{% static 'coop_auth/js/custom.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+    <script>
+       var myexpire_in = "{{ expire_in }}";
+    </script>
 <!--=== Content Part ===-->
 <!--=== Content Part ===-->
   <div class="container content">
@@ -21,9 +26,12 @@
      </p>
      <p>
      This is an implementation of COOP in python/django
-     </p><br>
+     <br>
+     </p>
      <a href="https://knpuniversity.com/screencast/oauth" class="btn-u btn-brd btn-brd-hover btn-u-dark">Read More</a>
     {% if access_token_valid %}
+      <!-- Start Counter -->
+      <!-- End Counter -->
       <a href="{% url 'mycoop' %}" class="btn-u" id="check_mycoop">Check my Coop state</a>
     {% else %}
       <a href="{{ url }}" class="btn btn-danger">Authorize</a>
@@ -47,16 +55,27 @@
         </div>
       <div>
       <!--== Counter== -->
-
-    </div>
       <!--== header Counter== -->
     </div>
       <blockquote>
       <p><em id='chicken_message'></em></p>
       <p><em id='chicken_message2'></em></p>
      </blockquote>
-   </div>
-  </div><!--/container-->
+    {% if access_token_valid %}
+      <div class="row margin-bottom-40">
+       <div class="headline"><h2>The Access Token will expire in:</h2></div>
+       <div class="your-clock"></div>
+    </div>
+    {% else %}
+      <div class="row margin-bottom-40">
+       <div class="headline"><h2>The Access Token has expired!</h2></div>
+     </div>
+    {% endif %}
+    </div>
+  </div>
+  </div>
+  </div>
+  <!--/container-->
   <!--=== End Content Part ===-->
 {% endblock %}
 

@@ -9,4 +9,11 @@ $(document).ready(function(){
         $('#chicken_message2').text(data[1].message);
       });// end getJSON
   });// end click
+
+var clock = new FlipClock($('.your-clock'), {
+  countdown: true,
+  });
+    clock.setTime(myexpire_in);
+    clock.setCountdown(true);
+    clock.start();
 });
