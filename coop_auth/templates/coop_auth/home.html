@@ -19,23 +19,33 @@
 <!--=== Content Part ===-->
   <div class="container content">
    <div class="row">
+
     <div class="col-md-6">
      <h2 class="title-v2">COOP</h2>
-     <p>
-     A test for COOP
-     </p>
+      <div class="row margin-bottom-40">
      <p>
      This is an implementation of COOP in python/django
-     <br>
      </p>
-     <a href="https://knpuniversity.com/screencast/oauth" class="btn-u btn-brd btn-brd-hover btn-u-dark">Read More</a>
+   </div>
     {% if access_token_valid %}
       <!-- Start Counter -->
       <!-- End Counter -->
-      <a href="{% url 'mycoop' %}" class="btn-u" id="check_mycoop">Check my Coop state</a>
+      <div class="row margin-bottom-40">
+       <a href="https://knpuniversity.com/screencast/oauth" class="btn-u btn-brd btn-brd-hover btn-u-dark">Read More</a>
+       <a href="{% url 'mycoop' %}" class="btn-u" id="check_mycoop">Check my Coop state</a>
+    </div>
+      <div class="row margin-bottom-40">
+       <div class="headline"><h2>The Access Token will expire in:</h2></div>
+       <div class="your-clock"></div>
+      </div>
     {% else %}
+
+      <div class="row margin-bottom-40">
+       <div class="headline"><h2>The Access Token has expired!</h2></div>
+      </div>
       <a href="{{ url }}" class="btn btn-danger">Authorize</a>
     {% endif %}
+
     </div>
     <div class="col-md-6">
 
@@ -45,36 +55,31 @@
        <div class="headline"><h2>Eggs</h2></div>
       <!--== Counter== -->
       <div class="row margin-bottom-40">
+
         <div class="counters col-md-3 col-sm-3">
          <span class="counter" id="collect_eggs"></span>
          <h4>Eggs Collected</h4>
         </div>
+
         <div class="counters col-md-3 col-sm-3">
          <span class="counter" id="total_eggs"></span>
          <h4>Total Eggs Collected</h4>
-        </div>
-      <div>
-      <!--== Counter== -->
-      <!--== header Counter== -->
-    </div>
-      <blockquote>
-      <p><em id='chicken_message'></em></p>
-      <p><em id='chicken_message2'></em></p>
-     </blockquote>
-    {% if access_token_valid %}
-      <div class="row margin-bottom-40">
-       <div class="headline"><h2>The Access Token will expire in:</h2></div>
-       <div class="your-clock"></div>
-    </div>
-    {% else %}
-      <div class="row margin-bottom-40">
-       <div class="headline"><h2>The Access Token has expired!</h2></div>
-     </div>
-    {% endif %}
-    </div>
-  </div>
-  </div>
-  </div>
+       </div>
+
+        <blockquote>
+        <p><em id='chicken_message'></em></p>
+        <p><em id='chicken_message2'></em></p>
+        </blockquote>
+
+      </div> <!-- end row -->
+  </div> <!-- end main-counters -->
+<div class="contex-bg">
+  <p class="bg-warning rounded">last update: <span id='last_update'></span>
+  </p>
+</div>
+  </div> <!-- end col-md-6 -->
+</div> <!-- end row -->
+  </div> <!-- end container -->
   <!--/container-->
   <!--=== End Content Part ===-->
 {% endblock %}

@@ -2,7 +2,7 @@
 An Implementation of OAuth2 according to RFC649 and
 https://knpuniversity.com/screencast/oauth.
 """
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
@@ -83,7 +83,8 @@ def mycoop(request):
 
     eggs_collect = requests.post(uri_eggs_collect, headers=headers)
     eggs_count = requests.post(uri_eggs_count, headers=headers)
-    result = "[{}, {}]".format(eggs_collect.text, eggs_count.text)
+    now = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    result = '[{}, {}, {{"last_update": "{}"}}]'.format(eggs_collect.text, eggs_count.text, now)
     return HttpResponse(result)
 
 def auth(request):

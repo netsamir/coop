@@ -7,13 +7,11 @@ $(document).ready(function(){
         $('#chicken_message').text(data[0].message);
         $('#total_eggs').text(data[1].data);
         $('#chicken_message2').text(data[1].message);
+        $('#last_update').text(data[2].last_update);
       });// end getJSON
   });// end click
 
-var clock = new FlipClock($('.your-clock'), {
-  countdown: true,
+var clock = $('.your-clock').FlipClock(myexpire_in, {
+  countdown: true
   });
-    clock.setTime(myexpire_in);
-    clock.setCountdown(true);
-    clock.start();
 });
