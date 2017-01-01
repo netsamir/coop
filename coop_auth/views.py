@@ -26,7 +26,15 @@ def home(request):
     """
     context = {}
     # authorization_endpoint =
-    url = "http://coop.apps.knpuniversity.com/authorize?client_id=Script_with_auth&response_type=code&redirect_uri=http://localhost:9000/auth&scope=eggs-collect profile eggs-count"
+    authorize = {
+        'base_url' : "http://coop.apps.knpuniversity.com/authorize",
+        'client_id' : "Script_with_auth",
+        'response_type' : "code",
+        'redirect_uri' : "http://localhost:9000/auth",
+        'scope' : "eggs-collect profile eggs-count"
+    }
+
+    url = "{base_url}?client_id={client_id}&response_type={response_type}&redirect_uri={redirect_uri}&scope={scope}".format(**authorize)
 
     access_token_valid = True
     user_id = 1270
