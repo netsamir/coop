@@ -119,6 +119,7 @@ def auth(request):
     # token_endpoint =
     token_endpoint = domaine + "/token"
     token_endpoint_out = requests.post(token_endpoint, data=data)
+    print(token_endpoint_out.text)
     access_token = token_endpoint_out.json()['access_token']
     expires_in = token_endpoint_out.json()['expires_in']
     user.access_token = access_token

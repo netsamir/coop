@@ -19,87 +19,266 @@
     </script>
 <!--=== Content Part ===-->
 <!--=== Content Part ===-->
-  <div class="container content">
-   <div class="row">
+<div class="interactive-slider-v2 blue">
 
-    <div class="col-md-6">
-     <h2 class="title-v2">OAuth2 in 8 Steps
-     <small>Implementation in Python/Django</small>
-     </h2>
-      <div class="row margin-bottom-40">
-        <div class="alert alert-info fade in">
-          <h4>Authorization Server</h4>
-            <p>
-            The server issuing access tokens to the client after successfully
-            authenticating the resource owner and obtaining authorization.
-             </p>
-            <p>
-        (A)  The client requests authorization from the resource owner.  The
-             authorization request can be made [...] indirectly via the
-             authorization server as an intermediary.
-             </p>
-            <p>
-        (B) The client receives an authorization grant, which is a
-            credential representing the resource owner's authorization.
-             </p>
-            <p>
-            
-            <strong>The Authorization grant will be send from the Authorization
-              Server to the Client via the </strong><code>redirect_uri</code>
-             </p>
-            <p>
-      (C)  The client requests an access token by authenticating with the
-            authorization server and presenting the authorization grant.
-             </p>
-             <p>
-             <pre><code class='JSON'>
-    data = {
-        'client_id': 'Script_with_auth',
-        'client_secret': 'fb765bad414da309eb7fc04bd1c2fac9',
-        'grant_type':'authorization_code',
-        'code': code,
-        'redirect_uri': 'http://localhost:9000/auth'
-    }
-             </code></pre>
-             </p>
-        </div>    
+   <div class="container">
+    <h1>OAuth2</h1>
+    <p>Implementation in Python/Django</p>
+      <a href="#" class="btn-u btn-u-lg re-btn-brd margin-right-5"><i class="fa fa-download"></i> Download</a>
+      <a href="#" class="btn-u btn-u-lg"> <i class="fa fa-github"></i> GitHub </a>
    </div>
+
+</div>
+
+  <div class="container content">
+      <div class="row margin-bottom-40">
+     <h2 class="title-v2">Introduction</h2>
+     <p>
+     The goal of this tutorial is to explain step by step how I implemented Oauth2 with Django. To create it I followed the tutorial from KNP University, <a href='https://knpuniversity.com/screencast/oauth'>OAuth2 in 8 Steps</a> and the <a href='https://tools.ietf.org/html/rfc6749'>RFC6749</a>
+     </p>
+   </div>
+      <div class="row margin-bottom-40">
+        <h2 class="title-v2">Definitions <small>RFC6749</small></h2>
+        <p>
+OAuth defines four roles:
+</p>
+      <dl class="dl-horizontal">
+         <dt>Authorization Server</dt>
+         <dd> The server issuing access tokens to the client after successfully
+            authenticating the resource owner and obtaining authorization.
+            <p>
+            <em>Comment:</em> This will be the KNP servers located in <a href=http://coop.apps.knpuniversity.com/api><code>
+http://coop.apps.knpuniversity.com/api</code></a>
+          </p>
+        </dl>
+      <dl class="dl-horizontal">
+        <dt>resource server</dt>
+        <dd>The server hosting the protected resources, capable of accepting
+        and responding to protected resource requests using access tokens.</dd>
+      </dl>
+      <dl class="dl-horizontal">
+            <dt>client</dt>
+            <dd>An application making protected resource requests on behalf of the
+      resource owner and with its authorization.  The term "client" does
+      not imply any particular implementation characteristics (e.g.,
+      whether the application executes on a server, a desktop, or other
+      devices).
+            <p>
+            <em>Comment:</em> This is the application that we will build.
+          </p>
+      </dd>
+        </dl>
+      <dl class="dl-horizontal">
+            <dt> resource owner</dt>
+            <dd>
+      An entity capable of granting access to a protected resource.
+      When the resource owner is a person, it is referred to as an
+      end-user.
+            <p>
+            <em>Comment:</em> This is me.
+          </p>
+          </dd>
+        </dl>
+
+        <p> The authorization process utilizes two authorization server endpoints (HTTP resources): </p>
+      <dl class="dl-horizontal">
+
+   <dt>Authorization endpoint</dt>
+   <dd>used by the client to obtain authorization from the resource owner via user-agent redirection.</dd>
+
+        </dl>
+      <dl class="dl-horizontal">
+      <dt>Token endpoint</dt>
+      <dd>used by the client to exchange an authorization grant for an access token, typically with client authentication.</dd>
+
+        </dl>
+        <p>
+   As well as one client endpoint:
+        </p>
+      <dl class="dl-horizontal">
+
+   <dt>Redirection endpoint</dt>
+   <dd>used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.</dd>
+    </dl>
+   </div>
+
+      <div class="row margin-bottom-40">
+        <h2 class="title-v2">Step 1: Register</h2>
+        <ol>
+          <li>Register the <code>Ressource Owner</code> (i.e.<strong>You</strong>) at <a href=http://coop.apps.knpuniversity.com/register><code> http://coop.apps.knpuniversity.com/api</code></a></li>
+
+          <li>Register the <code>Client</code> (i.e. <strong>Our Application</strong>) at <a href=http://coop.apps.knpuniversity.com/application><code>http://coop.apps.knpuniversity.com/application</code></a>. <br>
+              Here are the information we will provide:
+          <ul>
+            <li><strong>Name of the application:</strong> <code>myapp2</code>. This will be the <strong>client_id</strong>. Note that every application's name should be different across the website.</li>
+
+            <li><strong>Redirect URI:</strong> <code>http://localhost:8000/coop/callback</code>. This will be used by the Authorization server to send the <code>Authorization grant</code>. This is the reason why we have to use Django.  Because we will need to have a Web server Running able to receive <code>Authorization grant</code> through a <code>GET</code>. Indeed, the <code>Authorization Server</code> will send the <code>Authorization grant</code> at our <code>redirect_uri</code>: <code>http://localhost:8000/coop/callback?code=edc64eb3aba308cdd25792c4088ac3e897f994cd&</code></li>
+
+            <li><strong>Scope:</strong> These are the functions that will want to make available to the <code>Client</code>. This will be our selection:
+              <ul>
+                <li>Collect Eggs from Your Chickens</li>
+                <li>Get the Number of Eggs Collected Today</li>
+                <li>Access Your Profile Data</li>
+              </ul>
+             </li>
+            </ul>
+          </li>
+        Here is what we will receive:
+        <ul>
+
+          <li><strong>Client ID:</strong> <code>myapp2</code></li>
+            <li><strong>Client Secret:</strong> <code>af46e0353c2d7f507fd644d7a7733897</code></li>
+          <li><strong>Redirect URI: </strong><code>http://localhost:8000/coop/callback</code></li>
+      <li><strong>Scope:</strong>
+            <ul>
+              <li><code>eggs-collect</code></li>
+              <li><code>eggs-count</code></li>
+              <li><code>profile</code></li>
+              <ul>
+          </li>
+        </ul>
+      </ol>
+      </div>
+
+  <div class="row margin-bottom-40">
+
+      <div class="col-md-6">
+    <h2 class="title-v2">Step 2: Requests authorization</small></h2>
+  <blockquote class="text-right bq-dark margin-bottom-50">
+    The client requests authorization from the resource owner.  The
+          authorization request can be made [...] indirectly via the
+          authorization server as an intermediary.
+          <small><em>RFC6749</em></small>
+
+    </div> <! -- end col md -->
+    <div class="col-md-6">
     {% if access_token_valid %}
       <!-- Start Counter -->
       <!-- End Counter -->
       <div class="row margin-bottom-40">
-       <a href="https://knpuniversity.com/screencast/oauth" class="btn-u btn-brd btn-brd-hover btn-u-dark">Read More</a>
-       <a href="{% url 'mycoop' %}" class="btn-u" id="check_mycoop">Check my Coop state</a>
-       <a href="{{ url }}" class="btn-u btn-u-sea">Renew my Access Token</a>
-    </div>
+        <a href="{{ url }}" class="btn-u btn-u-sea">Renew my Access Token</a>
+      </div>
       <div class="row margin-bottom-40">
-       <div class="headline"><h2>The Access Token will expire in:</h2></div>
-       <div class="your-clock"></div>
+        <p>The Access Token will expire in:</p>
+        <div class="your-clock"></div>
       </div>
     {% else %}
+      <div class="row margin-bottom-40">
+        <p>The Access Token has expired!</p>
+      </div>
+      <a href="{{ url }}" class="btn btn-danger">Authorize</a>
+    {% endif %}
+  </div> <!-- end col -->
+</div> <!-- end row -->
+  <div class="row margin-bottom-40">
+        </blockquote>
+        <p>
+          Here are the settings that we will use: 
+          </p>
+          <pre><code class=python>
+          authorize = {
+              'base_url' : "http://coop.apps.knpuniversity.com/authorize",
+              'client_id' : "myapp2",
+              'response_type' : "code",
+              'redirect_uri' : "http://localhost:8000/coop/callback",
+              'scope' : "eggs-collect profile eggs-count"
+          }
+          </code></pre>
+        <p>
+        The request will be sent through <code>GET</code> to the <code>Authorization endpoint</code>
+        </p>
+          <pre><code class=http>
+  http://coop.apps.knpuniversity.com/authorize?client_id=myapp2&response_type=code&redirect_uri=http://localhost:8000/coop/callback&scope=eggs-collect%20profile%20eggs-count
+          </code></pre>
+          </p>
+  </div> <!-- end row -->
 
       <div class="row margin-bottom-40">
-       <div class="headline"><h2>The Access Token has expired!</h2></div>
+        <h2 class="title-v2">Step 3: Receives Authorization</h2>
+      <blockquote class="text-right bq-dark margin-bottom-50">
+        The client receives an authorization grant, which is a
+            credential representing the resource owner's authorization.
+             <small><em>RFC6749</em></small>
+            </blockquote>
+            <p>
+
+      <div class="row margin-bottom-40">
+        
+        <p>
+            The Authorization grant will be sent from the Authorization
+              Server to the Client to the <code>Redirect endpoint</code> via <code>GET</code>
+              </p>
+            </div>
+            <pre><code class=http>http://localhost:8000/coop/callback?code=edc64eb3aba308cdd25792c4088ac3e897f994cd&</code></pre>
+             </p>
+    </div><!--end row -->
+
+  <div class="row margin-bottom-40">
+      <h2 class="title-v2">Step 4: Request Access Token </h2>
+      <blockquote class="text-right bq-dark margin-bottom-50">
+      The client requests an access token by authenticating with the
+            authorization server and presenting the authorization grant.
+             <small><em>RFC6749</em></small>
+            </blockquote>
+             <p>
+             This request will be done through a <code>POST</code> with the following data:
+             </p>
+             <pre><code class=python>
+                data = {
+                    'client_id': 'Script_with_auth',
+                    'client_secret': 'fb765bad414da309eb7fc04bd1c2fac9',
+                    'grant_type':'authorization_code',
+                    'code': code,
+                    'redirect_uri': 'http://localhost:8000/coop/callback'
+                }
+             </code></pre>
+             <p>
+             The response will be sent by the <code>Authorization Server</code> with <code>JSON</code>
+             <pre><code class=json>
+{"access_token":"27ae34d2555b5c089ea1fce688cb580a8d012f35","expires_in":86400,"token_type":"Bearer","scope":"eggs-collect profile eggs-count","refresh_token":"1e78bfbed68749621e9a80d92158333d469c93c1"}</code></pre>
+
+    </div>
+
+  <div class="row margin-bottom-40">
+      <h2 class="title-v2">Step 5: Request Resource </h2>
+      <blockquote class="text-right bq-dark margin-bottom-50">
+
+The client makes a protected resource request to the resource
+        server by presenting the access token.
+
+     The resource server validates the access token, and if valid,
+        serves the request.
+     <small><em>RFC6749</em></small>
+            </blockquote>
+          </div>
+
+    {% if access_token_valid %}
+      <!-- Start Counter -->
+      <!-- End Counter -->
+      <div class="row margin-bottom-40">
+        <a href="{% url 'mycoop' %}" class="btn-u" id="check_mycoop">Request Resource</a>
+        <a href="{{ url }}" class="btn-u btn-u-sea">Renew my Access Token</a>
+      </div>
+    {% else %}
+      <div class="row margin-bottom-40">
+        <p>The Access Token has expired!</p>
       </div>
       <a href="{{ url }}" class="btn btn-danger">Authorize</a>
     {% endif %}
 
-    </div>
-    <div class="col-md-6">
-
-      <!--== header Counter== -->
+              <!--== header Counter== -->
       <!-- Counters -->
       <div class="main-counters margin-bottom-40">
        <div class="headline"><h2>Eggs</h2></div>
       <!--== Counter== -->
       <div class="row margin-bottom-40">
 
-        <div class="counters col-md-3 col-sm-3">
+        <div class="counters col-md-6 col-sm-6">
          <span class="counter" id="collect_eggs"></span>
          <h4>Eggs Collected</h4>
         </div>
 
-        <div class="counters col-md-3 col-sm-3">
+        <div class="counters col-md-6 col-sm-6">
          <span class="counter" id="total_eggs"></span>
          <h4>Total Eggs Collected</h4>
        </div>
